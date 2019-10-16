@@ -29,7 +29,7 @@ optional arguments:
 
 ## Notes
 
-*. A log file will rewrite as $src/.bck_log
-*. A list file will rewrite as $src/.bck_lst
-*. The conf file is /etc/pcp.cfg
-*. A user can has his own config as ~/.pcp.cfg
+* A log file will rewrite as $src/.bck_log
+* A list file will rewrite as $src/.bck_lst
+* The conf file is /etc/pcp.cfg
+* A user can has his own config as ~/.pcp.cfg
