@@ -59,23 +59,30 @@ def eprint(*args, **kwargs):
     print(*args, file=sys.stderr, **kwargs)
 
 def copy(src,dest,**kwargs):
+	print (kwargs)
 	doneFolders=[]
 	if src[-1]!="/": src+="/"
-	logfile=kwargs.get("log-file",src+".bck_log")
-	lstfile=kwargs.get("lst-file",src+".bck_lst")
+	logfile=kwargs.get("log-file",src+".pcp_log") 
+	if logfile==None: logfile=src+".pcp_log"
+	lstfile=kwargs.get("lst-file",src+".pcp_lst")
+	if lstfile==None: src+".pcp_lst"
 	if os.path.exists(logfile):
 		doneFolders=[l.strip() for l in open(logfile,'r').readlines()]
 	logFile=open(logfile,"a")
 	rsync_options=kwargs.get("rsync","")
-	if not "no-scan" in kwargs and os.path.exists(lstfile):
+	if rsync_options  == None: rsync_options=""
+	if  kwargs["no_scan"] and os.path.exists(lstfile):
+		folders=[l.strip() for l in open(lstfile,"r").readlines()]
+		lst.write("\n".join(folders[:-1]))
+	else:
 		folders=Common.run("find %s -type d -links 2"%src).split("\n")
 		lst=open(lstfile,"w")
 		lst.write("\n".join(folders[:-1]))
 		lst.close()
-	else:
-		folders=[l.strip() for l in open(lstfile,"r").readlines()]
-		lst.write("\n".join(folders[:-1]))
+		
 	i=0
+	if not os.path.exists(dest): os.makedirs(dest)
+	total=len(folders)
 	for folder in folders:
 		i+=1
 		if folder=='': continue
@@ -86,7 +93,7 @@ def copy(src,dest,**kwargs):
 			print("HDD is full, exiting....")
 			exit(-125)	
 		print ("Working on %s/%s: %s"%(i,total,folder))
-		savePath="%s/%s"%(dest,folder.replace(src,dest))
+		savePath="%s/%s"%(dest,folder.replace(src,'') if src in folder else src)
 		if not os.path.exists(savePath): os.makedirs(savePath)
 		for file in Config.grab_files:
 			print (datetime.datetime.now())
@@ -104,7 +111,7 @@ if __name__=="__main__":
 	parser.add_argument("dest", help="Dest Mountpoint")
 	parser.add_argument("-lg", "--log", help="Log File to use")
 	parser.add_argument("-ls", "--lst", help="List File to use")
-	parser.add_argument("-ns", "--no-scan", help="Don't rescan the folder, this needs a previous run")
+	parser.add_argument("-ns", "--no-scan", help="Don't rescan the folder, this needs a previous run",action='store_true')
 	parser.add_argument("-rs", "--rsync", help="Extra rsync parameters")
 	args = parser.parse_args()
-	copy(args.src,args.dest,**vars(args))
+	copy(**vars(args))

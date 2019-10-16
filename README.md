@@ -29,7 +29,8 @@ optional arguments:
 
 ## Notes
 
-* A log file will rewrite as $src/.bck_log
-* A list file will rewrite as $src/.bck_lst
+* A log file will rewrite as $src/.pcp_log
+* A list file will rewrite as $src/.pcp_lst
 * The conf file is /etc/pcp.cfg
 * A user can has his own config as ~/.pcp.cfg
+* When the dest is full, the exit code is -125
