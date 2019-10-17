@@ -1,5 +1,5 @@
 # partialCopy
-A tool to copy big data to multiple smaller disks
+A tool to copy big data to multiple smaller disks and tapes using ltfs ,
 
 ## Motivation
 
